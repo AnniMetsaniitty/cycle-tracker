@@ -1,13 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.annimetsaniitty.cycletracker.model;
 
-/**
- *
- * @author anni
- */
+import java.time.LocalDate;
+
 public class Cycle {
+   private LocalDate startDate;
+   private LocalDate endDate;
+   
+   public Cycle(LocalDate startDate) {
+       this.startDate = startDate;
+       this.endDate = null;
+   }
+   
+   public LocalDate getStartDate() {
+       return startDate;
+   }
+   
+   public void setStartDate(LocalDate startDate) {
+       this.startDate = startDate;
+   }
+   
+   public LocalDate getEndDate() {
+       return endDate;
+   }
     
+   public void setEndDate(LocalDate endDate) {
+       this.endDate = endDate;
+   }
+   
+   public boolean isActive() {
+       return endDate == null;
+   }
 }

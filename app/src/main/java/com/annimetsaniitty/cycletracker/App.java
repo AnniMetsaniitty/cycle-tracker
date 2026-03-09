@@ -1,16 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.annimetsaniitty.cycletracker;
 
-/**
- *
- * @author anni
- */
-public class App {
+import com.annimetsaniitty.cycletracker.service.CycleService;
 
+public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        CycleService cycleService = new CycleService();
+
+        System.out.println("=== Medication & Cycle Tracker ===");
+
+        cycleService.startNewCycle();
+
+        int currentDay = cycleService.getCurrentCycleDay();
+        System.out.println("Current cycle day: " + currentDay);
+
+        if (cycleService.isMedicationActive()) {
+            System.out.println("Medication is active.");
+        } else {
+            System.out.println("Medication is not active.");
+        }
+
+        cycleService.endCurrentCycle();
     }
 }
