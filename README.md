@@ -13,8 +13,9 @@ The repository is no longer only an in-memory prototype. It now includes:
 - Cycle start, end, current-cycle, and history endpoints
 - Medication window status endpoint
 - Unit and integration test scaffolding
+- Initial JavaFX desktop client that talks to the REST API
 
-The JavaFX desktop UI described in the technical documentation is still pending.
+The desktop layer currently covers login, registration, dashboard metrics, medication status, and cycle history.
 
 ## API Endpoints
 
@@ -36,3 +37,17 @@ mvn spring-boot:run
 ```
 
 The default development database is in-memory H2. The H2 console is available at `/h2-console`.
+
+In a second terminal, start the JavaFX client:
+
+```bash
+cd app
+mvn javafx:run
+```
+
+If your backend is running on a different base URL:
+
+```bash
+cd app
+mvn javafx:run -Dcycletracker.api.base-url=http://localhost:8080
+```

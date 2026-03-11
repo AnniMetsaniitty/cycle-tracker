@@ -8,7 +8,8 @@ Implementation status on March 11, 2026:
 - H2/JPA persistence is implemented for development
 - User, Cycle, and Medication domain models are implemented
 - REST endpoints for login, cycle management, and medication status are implemented
-- JavaFX UI, richer statistics, and notification features are still planned
+- An initial JavaFX desktop client is implemented for login, registration, dashboard metrics, medication status, and cycle history
+- Richer statistics, notifications, and broader UI coverage are still planned
 
 ------------------------------------------------------------------------
 

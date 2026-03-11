@@ -2,7 +2,7 @@
 
 ## Status
 
-As of March 11, 2026, the repository has moved from a prototype to a working Spring Boot backend and the changes are pushed to GitHub.
+As of March 11, 2026, the repository includes a working Spring Boot backend and an initial JavaFX desktop client layer.
 
 ## Completed
 
@@ -20,11 +20,14 @@ As of March 11, 2026, the repository has moved from a prototype to a working Spr
 - Added H2 configuration for local development
 - Added unit and integration test scaffolding
 - Fixed cycle day calculation to use total elapsed days across month boundaries
+- Added a JavaFX desktop client that consumes the backend REST API
+- Added login, registration, dashboard, medication status, and history views in the desktop app
 - Updated `README.md` and technical documentation to reflect the implemented backend
 
 ## Current Architecture
 
 - Backend framework: Spring Boot
+- Desktop client: JavaFX
 - Persistence: Spring Data JPA
 - Development database: H2
 - Password hashing: BCrypt
@@ -40,12 +43,16 @@ As of March 11, 2026, the repository has moved from a prototype to a working Spr
 - `app/src/main/java/com/annimetsaniitty/cycletracker/repository/`
 - `app/src/main/java/com/annimetsaniitty/cycletracker/model/`
 - `app/src/main/resources/application.properties`
+- `app/src/main/resources/ui/cycle-tracker.css`
 - `app/src/test/java/com/annimetsaniitty/cycletracker/`
+- `app/src/main/java/com/annimetsaniitty/cycletracker/ui/`
+- `app/src/main/java/com/annimetsaniitty/cycletracker/client/`
 
 ## Verified
 
 - `mvn test` runs successfully
 - `mvn spring-boot:run` runs successfully
+- JavaFX desktop client code has been added; run verification pending for the new client layer
 - Changes committed and pushed to `origin/main`
 
 ## Latest Commits
@@ -55,22 +62,20 @@ As of March 11, 2026, the repository has moved from a prototype to a working Spr
 
 ## Known Gaps
 
-- JavaFX client layer is not implemented yet
 - No PostgreSQL profile/configuration has been added yet
 - No real session/auth token flow yet; login currently validates credentials and returns user data
-- No desktop UI screens yet for login, dashboard, history, or medication tracking
+- Desktop client does not yet include advanced navigation, edit flows, or background sync states
 - No deployment packaging beyond standard Spring Boot setup
 
 ## Next Recommended Step
 
-Build the JavaFX client layer described in the documentation:
+Extend the JavaFX client layer:
 
-- JavaFX application bootstrap
-- login/register views
-- dashboard view
-- cycle actions wired to REST API
-- medication status display
-- cycle history view
+- split screens into dedicated view/controller classes or FXML
+- add richer validation and user feedback
+- add statistics and trend views
+- add API base URL configuration in the UI settings
+- improve desktop packaging and distribution
 
 ## Local Commands
 
@@ -78,6 +83,7 @@ Build the JavaFX client layer described in the documentation:
 cd app
 mvn test
 mvn spring-boot:run
+mvn javafx:run
 ```
 
 ## Notes
