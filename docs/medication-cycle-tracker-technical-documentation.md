@@ -2,6 +2,14 @@
 
 ## Technical Documentation
 
+Implementation status on March 11, 2026:
+
+- Spring Boot REST backend is implemented in the repository
+- H2/JPA persistence is implemented for development
+- User, Cycle, and Medication domain models are implemented
+- REST endpoints for login, cycle management, and medication status are implemented
+- JavaFX UI, richer statistics, and notification features are still planned
+
 ------------------------------------------------------------------------
 
 # 1. Project Overview

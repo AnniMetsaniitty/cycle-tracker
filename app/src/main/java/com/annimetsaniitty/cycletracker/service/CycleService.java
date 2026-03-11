@@ -1,46 +1,101 @@
 package com.annimetsaniitty.cycletracker.service;
 
+import com.annimetsaniitty.cycletracker.dto.CycleResponse;
+import com.annimetsaniitty.cycletracker.exception.InvalidStateException;
+import com.annimetsaniitty.cycletracker.exception.ResourceNotFoundException;
 import com.annimetsaniitty.cycletracker.model.Cycle;
+import com.annimetsaniitty.cycletracker.model.Medication;
+import com.annimetsaniitty.cycletracker.model.User;
+import com.annimetsaniitty.cycletracker.repository.CycleRepository;
+import com.annimetsaniitty.cycletracker.repository.MedicationRepository;
+import com.annimetsaniitty.cycletracker.repository.UserRepository;
+import java.time.Clock;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class CycleService {
-    private Cycle currentCycle;
+    public static final int MEDICATION_START_DAY = 16;
+    public static final int MEDICATION_END_DAY = 26;
 
-    public void startNewCycle() {
-        if (currentCycle != null && currentCycle.isActive()) {
-            currentCycle.setEndDate(LocalDate.now());
-            System.out.println("Previous cycle ended on: " + currentCycle.getEndDate());
+    private final CycleRepository cycleRepository;
+    private final UserRepository userRepository;
+    private final MedicationRepository medicationRepository;
+    private final Clock clock;
+
+    public CycleService(
+            CycleRepository cycleRepository,
+            UserRepository userRepository,
+            MedicationRepository medicationRepository,
+            Clock clock) {
+        this.cycleRepository = cycleRepository;
+        this.userRepository = userRepository;
+        this.medicationRepository = medicationRepository;
+        this.clock = clock;
+    }
+
+    @Transactional
+    public CycleResponse startNewCycle(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        LocalDate today = LocalDate.now(clock);
+        cycleRepository.findByUserIdAndEndDateIsNull(userId)
+                .ifPresent(cycle -> cycle.end(today));
+
+        Cycle cycle = cycleRepository.save(new Cycle(user, today));
+        Medication medication = new Medication(cycle, MEDICATION_START_DAY, MEDICATION_END_DAY);
+        medicationRepository.save(medication);
+        cycle.setMedication(medication);
+
+        return toResponse(cycle, today);
+    }
+
+    @Transactional
+    public CycleResponse endCurrentCycle(Long userId) {
+        Cycle cycle = cycleRepository.findByUserIdAndEndDateIsNull(userId)
+                .orElseThrow(() -> new InvalidStateException("No active cycle for user: " + userId));
+        LocalDate today = LocalDate.now(clock);
+        cycle.end(today);
+        return toResponse(cycle, today);
+    }
+
+    @Transactional(readOnly = true)
+    public CycleResponse getCurrentCycle(Long userId) {
+        LocalDate today = LocalDate.now(clock);
+        Cycle cycle = cycleRepository.findByUserIdAndEndDateIsNull(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No active cycle for user: " + userId));
+        return toResponse(cycle, today);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CycleResponse> getCycleHistory(Long userId) {
+        LocalDate today = LocalDate.now(clock);
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found: " + userId);
         }
-
-        currentCycle = new Cycle(LocalDate.now());
-        System.out.println("New cycle started on: " + currentCycle.getStartDate());
+        return cycleRepository.findByUserIdOrderByStartDateDesc(userId).stream()
+                .map(cycle -> toResponse(cycle, today))
+                .toList();
     }
 
-    public void endCurrentCycle() {
-        if (currentCycle == null || !currentCycle.isActive()) {
-            System.out.println("No active cycle to end.");
-            return;
+    public long getCurrentCycleDay(Cycle cycle, LocalDate today) {
+        if (!cycle.isActive()) {
+            return 0;
         }
-
-        currentCycle.setEndDate(LocalDate.now());
-        System.out.println("Cycle ended on: " + currentCycle.getEndDate());
+        return ChronoUnit.DAYS.between(cycle.getStartDate(), today) + 1;
     }
 
-    public int getCurrentCycleDay() {
-        if (currentCycle == null || !currentCycle.isActive()) {
-            return -1;
-        }
-
-        return Period.between(currentCycle.getStartDate(), LocalDate.now()).getDays() + 1;
-    }
-
-    public boolean isMedicationActive() {
-        int day = getCurrentCycleDay();
-        return day >= 16 && day <= 26;
-    }
-
-    public Cycle getCurrentCycle() {
-        return currentCycle;
+    private CycleResponse toResponse(Cycle cycle, LocalDate today) {
+        return new CycleResponse(
+                cycle.getId(),
+                cycle.getUser().getId(),
+                cycle.getStartDate(),
+                cycle.getEndDate(),
+                cycle.isActive(),
+                getCurrentCycleDay(cycle, today));
     }
 }
