@@ -15,7 +15,7 @@ The repository is no longer only an in-memory prototype. It now includes:
 - Unit and integration test scaffolding
 - Initial JavaFX desktop client that talks to the REST API
 
-The desktop layer currently covers login, registration, dashboard metrics, medication status, and cycle history.
+The desktop layer now uses a more structured UI split with dedicated auth and dashboard views. It currently covers login, registration, dashboard metrics, next medication date, medication status, history insights, and selected-cycle detail views.
 
 ## API Endpoints
 

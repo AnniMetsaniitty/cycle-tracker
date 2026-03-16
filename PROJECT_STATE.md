@@ -2,7 +2,7 @@
 
 ## Status
 
-As of March 11, 2026, the repository includes a working Spring Boot backend and an initial JavaFX desktop client layer.
+As of March 12, 2026, the repository includes a working Spring Boot backend and a refactored JavaFX desktop client layer.
 
 ## Completed
 
@@ -22,6 +22,8 @@ As of March 11, 2026, the repository includes a working Spring Boot backend and 
 - Fixed cycle day calculation to use total elapsed days across month boundaries
 - Added a JavaFX desktop client that consumes the backend REST API
 - Added login, registration, dashboard, medication status, and history views in the desktop app
+- Refactored the JavaFX client into a clearer app-controller plus dedicated auth/dashboard views
+- Added next-medication display, history insights, and selected-cycle detail panel to the dashboard
 - Updated `README.md` and technical documentation to reflect the implemented backend
 
 ## Current Architecture
@@ -46,13 +48,14 @@ As of March 11, 2026, the repository includes a working Spring Boot backend and 
 - `app/src/main/resources/ui/cycle-tracker.css`
 - `app/src/test/java/com/annimetsaniitty/cycletracker/`
 - `app/src/main/java/com/annimetsaniitty/cycletracker/ui/`
+- `app/src/main/java/com/annimetsaniitty/cycletracker/ui/view/`
 - `app/src/main/java/com/annimetsaniitty/cycletracker/client/`
 
 ## Verified
 
 - `mvn test` runs successfully
 - `mvn spring-boot:run` runs successfully
-- JavaFX desktop client code has been added; run verification pending for the new client layer
+- `mvn javafx:run` starts the desktop client successfully
 - Changes committed and pushed to `origin/main`
 
 ## Latest Commits
@@ -71,10 +74,11 @@ As of March 11, 2026, the repository includes a working Spring Boot backend and 
 
 Extend the JavaFX client layer:
 
-- split screens into dedicated view/controller classes or FXML
 - add richer validation and user feedback
 - add statistics and trend views
+- add more dedicated history/dashboard subviews or move to FXML if preferred
 - add API base URL configuration in the UI settings
+- add PostgreSQL profile/configuration to match the documentation more closely
 - improve desktop packaging and distribution
 
 ## Local Commands
