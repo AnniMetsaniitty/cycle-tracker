@@ -6,6 +6,7 @@ Implementation status on March 11, 2026:
 
 - Spring Boot REST backend is implemented in the repository
 - H2/JPA persistence is implemented for development
+- PostgreSQL profile support is implemented for persistent local storage
 - User, Cycle, and Medication domain models are implemented
 - REST endpoints for login, cycle management, and medication status are implemented
 - An initial JavaFX desktop client is implemented for login, registration, dashboard metrics, medication status, and cycle history

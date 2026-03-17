@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: cycle-tracker-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cycletracker
+      POSTGRES_USER: cycletracker
+      POSTGRES_PASSWORD: cycletracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - cycle-tracker-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cycletracker -d cycletracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cycle-tracker-postgres-data:

@@ -18,6 +18,7 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
   - cycle history
   - medication status
 - Added H2 configuration for local development
+- Added a PostgreSQL Spring profile for persistent storage
 - Added unit and integration test scaffolding
 - Fixed cycle day calculation to use total elapsed days across month boundaries
 - Added a JavaFX desktop client that consumes the backend REST API
@@ -32,6 +33,7 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
 - Desktop client: JavaFX
 - Persistence: Spring Data JPA
 - Development database: H2
+- Persistent database option: PostgreSQL
 - Password hashing: BCrypt
 - Build tool: Maven
 - Language level: Java 17 in Maven config
@@ -45,7 +47,11 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
 - `app/src/main/java/com/annimetsaniitty/cycletracker/repository/`
 - `app/src/main/java/com/annimetsaniitty/cycletracker/model/`
 - `app/src/main/resources/application.properties`
+- `app/src/main/resources/application-h2.properties`
+- `app/src/main/resources/application-postgres.properties`
 - `app/src/main/resources/ui/cycle-tracker.css`
+- `docker-compose.yml`
+- `app/.env.postgres.example`
 - `app/src/test/java/com/annimetsaniitty/cycletracker/`
 - `app/src/main/java/com/annimetsaniitty/cycletracker/ui/`
 - `app/src/main/java/com/annimetsaniitty/cycletracker/ui/view/`
@@ -65,7 +71,6 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
 
 ## Known Gaps
 
-- No PostgreSQL profile/configuration has been added yet
 - No real session/auth token flow yet; login currently validates credentials and returns user data
 - Desktop client does not yet include advanced navigation, edit flows, or background sync states
 - No deployment packaging beyond standard Spring Boot setup
@@ -78,7 +83,7 @@ Extend the JavaFX client layer:
 - add statistics and trend views
 - add more dedicated history/dashboard subviews or move to FXML if preferred
 - add API base URL configuration in the UI settings
-- add PostgreSQL profile/configuration to match the documentation more closely
+- test and harden the PostgreSQL runtime path further
 - improve desktop packaging and distribution
 
 ## Local Commands
