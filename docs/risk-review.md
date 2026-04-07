@@ -5,15 +5,18 @@ Last reviewed: 2026-04-07
 ## 1. Unauthenticated user-id-based data access
 
 - Severity: High
-- Status: In Progress
+- Status: Partially Mitigated
 - Explanation: Cycle and medication endpoints trust caller-supplied `userId`, allowing clients to read or mutate another user's cycle data if they know or guess the id.
 - Impacted files: `CycleController.java`, `MedicationController.java`, `UserController.java`, `UserService.java`, `CycleService.java`, `MedicationService.java`, desktop API client/session code
+- Date updated: 2026-04-07
+- Done: Added opaque bearer tokens issued on registration/login, required bearer authorization on cycle and medication endpoints, and rejected token/requested-user mismatches with 403 responses. Updated the desktop API client to send the token and added integration coverage for missing-token and cross-user access denial.
+- Remaining gaps: Tokens are in-memory and are lost on backend restart; there is no expiry, refresh, logout invalidation, persistent session store, or full Spring Security filter chain yet. Existing endpoint paths still include `userId`, but the server now requires it to match the bearer token.
 
 ## 2. Login has no durable session or token
 
 - Severity: High
 - Status: Open
-- Explanation: Login validates credentials but returns only user data, so later requests cannot be tied to an authenticated caller.
+- Explanation: Login now returns an in-memory bearer token from the first mitigation, but sessions are not durable and have no expiry, refresh, logout invalidation, or persistent store.
 - Impacted files: `UserService.java`, `UserController.java`, `UserResponse.java`, desktop API client/session code
 
 ## 3. Unsafe automatic schema evolution

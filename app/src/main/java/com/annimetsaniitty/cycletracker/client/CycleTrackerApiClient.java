@@ -24,6 +24,7 @@ public class CycleTrackerApiClient {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final String baseUrl;
+    private String accessToken;
 
     public CycleTrackerApiClient(String baseUrl) {
         this(HttpClient.newHttpClient(), new ObjectMapper().findAndRegisterModules(), baseUrl);
@@ -36,11 +37,19 @@ public class CycleTrackerApiClient {
     }
 
     public UserResponse register(String username, String email, String password) {
-        return sendJsonRequest("/user/register", "POST", new RegisterRequest(username, password, email), UserResponse.class);
+        UserResponse response = sendJsonRequest(
+                "/user/register",
+                "POST",
+                new RegisterRequest(username, password, email),
+                UserResponse.class);
+        accessToken = response.accessToken();
+        return response;
     }
 
     public UserResponse login(String username, String password) {
-        return sendJsonRequest("/user/login", "POST", new LoginRequest(username, password), UserResponse.class);
+        UserResponse response = sendJsonRequest("/user/login", "POST", new LoginRequest(username, password), UserResponse.class);
+        accessToken = response.accessToken();
+        return response;
     }
 
     public CycleResponse startCycle(Long userId) {
@@ -105,6 +114,9 @@ public class CycleTrackerApiClient {
 
         if (body != null) {
             requestBuilder.header("Content-Type", "application/json");
+        }
+        if (accessToken != null && !accessToken.isBlank()) {
+            requestBuilder.header("Authorization", "Bearer " + accessToken);
         }
 
         HttpRequest request = requestBuilder.method(

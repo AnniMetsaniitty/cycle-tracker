@@ -15,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final AuthTokenService authTokenService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, AuthTokenService authTokenService) {
         this.userRepository = userRepository;
+        this.authTokenService = authTokenService;
     }
 
     @Transactional
@@ -50,6 +52,6 @@ public class UserService {
     }
 
     private UserResponse toResponse(User user) {
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail());
+        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), authTokenService.issueToken(user));
     }
 }

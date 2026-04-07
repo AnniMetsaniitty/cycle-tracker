@@ -16,7 +16,17 @@ public class RestExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
-    @ExceptionHandler({AuthenticationFailedException.class, InvalidStateException.class})
+    @ExceptionHandler(AuthenticationFailedException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthenticationFailed(AuthenticationFailedException exception) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationFailedException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthorizationFailed(AuthorizationFailedException exception) {
+        return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidStateException.class)
     public ResponseEntity<Map<String, Object>> handleBadRequest(RuntimeException exception) {
         return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
