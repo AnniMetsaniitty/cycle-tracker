@@ -1,11 +1,13 @@
 package com.annimetsaniitty.cycletracker.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.annimetsaniitty.cycletracker.repository.AuthTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ class CycleControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private AuthTokenRepository authTokenRepository;
+
     @Test
     void startsCycleAndReturnsCurrentCycle() throws Exception {
         String userPayload = objectMapper.writeValueAsString(Map.of(
@@ -43,6 +48,7 @@ class CycleControllerIntegrationTest {
 
         long userId = objectMapper.readTree(response).get("id").asLong();
         String accessToken = objectMapper.readTree(response).get("accessToken").asText();
+        assertThat(authTokenRepository.count()).isPositive();
         String cyclePayload = objectMapper.writeValueAsString(Map.of("userId", userId));
 
         mockMvc.perform(post("/cycle/start")
