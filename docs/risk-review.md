@@ -25,9 +25,12 @@ Last reviewed: 2026-04-08
 ## 3. Unsafe automatic schema evolution
 
 - Severity: High
-- Status: Open
-- Explanation: `spring.jpa.hibernate.ddl-auto=update` mutates schemas implicitly without reviewed migrations or rollback history.
-- Impacted files: `application.properties`, database migration/config files
+- Status: Partially Mitigated
+- Explanation: Hibernate automatic schema mutation has been disabled; startup now validates the schema against an explicit SQL definition instead of updating it implicitly.
+- Impacted files: `application.properties`, `schema.sql`, database migration/config files
+- Date updated: 2026-04-08
+- Done: Replaced `spring.jpa.hibernate.ddl-auto=update` with `validate`, enabled SQL initialization, and added an explicit idempotent `schema.sql` for the current tables and constraints.
+- Remaining gaps: Schema changes are now explicit and reviewable, but there is still no versioned migration history or rollback workflow. Future schema changes should update the explicit SQL or move to a lightweight migration tool.
 
 ## 4. Concurrent cycle start consistency
 
