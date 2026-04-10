@@ -39,7 +39,7 @@ public class CycleService {
 
     @Transactional
     public CycleResponse startNewCycle(Long userId) {
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByIdForUpdate(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
 
         LocalDate today = LocalDate.now(clock);
@@ -56,6 +56,8 @@ public class CycleService {
 
     @Transactional
     public CycleResponse endCurrentCycle(Long userId) {
+        userRepository.findByIdForUpdate(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
         Cycle cycle = cycleRepository.findByUserIdAndEndDateIsNull(userId)
                 .orElseThrow(() -> new InvalidStateException("No active cycle for user: " + userId));
         LocalDate today = LocalDate.now(clock);

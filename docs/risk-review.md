@@ -1,6 +1,6 @@
 # Risk Review
 
-Last reviewed: 2026-04-08
+Last reviewed: 2026-04-10
 
 ## 1. Unauthenticated user-id-based data access
 
@@ -35,9 +35,12 @@ Last reviewed: 2026-04-08
 ## 4. Concurrent cycle start consistency
 
 - Severity: Medium-High
-- Status: Open
-- Explanation: Starting a cycle ends the active cycle and creates a new one without locking or a database constraint that guarantees one active cycle per user.
-- Impacted files: `CycleService.java`, `CycleRepository.java`, `Cycle.java`, database schema/migrations
+- Status: Partially Mitigated
+- Explanation: Cycle-changing operations now serialize per user through a pessimistic database lock, reducing the race that could leave conflicting active-cycle state.
+- Impacted files: `CycleService.java`, `CycleRepository.java`, `UserRepository.java`, tests
+- Date updated: 2026-04-10
+- Done: Added a pessimistic write lock on the user row for cycle start/end operations and added an integration test that exercises concurrent cycle starts and verifies only one active cycle remains.
+- Remaining gaps: The invariant is enforced through service-level locking, not a database constraint on the `cycles` table. Direct writes outside this code path could still violate it.
 
 ## 5. Local database defaults can leak into shared use
 

@@ -9,4 +9,6 @@ public interface CycleRepository extends JpaRepository<Cycle, Long> {
     Optional<Cycle> findByUserIdAndEndDateIsNull(Long userId);
 
     List<Cycle> findByUserIdOrderByStartDateDesc(Long userId);
+
+    long countByUserIdAndEndDateIsNull(Long userId);
 }
