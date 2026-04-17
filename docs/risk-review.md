@@ -55,9 +55,12 @@ Last reviewed: 2026-04-17
 ## 6. H2 console enabled in the default development profile
 
 - Severity: Medium
-- Status: Open
+- Status: Partially Mitigated
 - Explanation: The default profile is H2 and the H2 console is enabled, which is convenient locally but risky if exposed beyond local development.
 - Impacted files: `application.properties`, `application-h2.properties`
+- Date updated: 2026-04-17
+- Done: Changed the H2 profile so the H2 console is disabled by default and only enabled through an explicit `CYCLE_TRACKER_H2_CONSOLE_ENABLED=true` opt-in. Updated the README to document the local-only enablement flow.
+- Remaining gaps: The console can still be exposed if someone explicitly enables it in a broader environment. There is still no separate local-only profile or network-level guard that restricts console exposure beyond the opt-in toggle.
 
 ## 7. Minimal registration validation
 

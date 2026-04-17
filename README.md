@@ -37,7 +37,16 @@ cd app
 mvn spring-boot:run
 ```
 
-The default development database is in-memory H2. The H2 console is available at `/h2-console`.
+The default development database is in-memory H2. The H2 console path is `/h2-console`, but it is disabled by default and must be enabled intentionally for local-only use.
+
+To enable it for a local session:
+
+```bash
+cd app
+CYCLE_TRACKER_H2_CONSOLE_ENABLED=true mvn spring-boot:run
+```
+
+Then open `/h2-console` on the local app instance.
 
 ## Persistent PostgreSQL
 
