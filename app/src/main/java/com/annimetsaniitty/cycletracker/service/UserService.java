@@ -8,6 +8,7 @@ import com.annimetsaniitty.cycletracker.exception.InvalidStateException;
 import com.annimetsaniitty.cycletracker.exception.ResourceNotFoundException;
 import com.annimetsaniitty.cycletracker.model.User;
 import com.annimetsaniitty.cycletracker.repository.UserRepository;
+import java.util.Locale;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +26,19 @@ public class UserService {
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.username())) {
-            throw new InvalidStateException("Username already exists: " + request.username());
+        String normalizedUsername = normalizeUsername(request.username());
+        String normalizedEmail = normalizeEmail(request.email());
+
+        if (userRepository.existsByUsername(normalizedUsername)) {
+            throw new InvalidStateException("Username already exists: " + normalizedUsername);
         }
-        if (userRepository.existsByEmail(request.email())) {
-            throw new InvalidStateException("Email already exists: " + request.email());
+        if (userRepository.existsByEmail(normalizedEmail)) {
+            throw new InvalidStateException("Email already exists: " + normalizedEmail);
         }
 
         User user = new User(
-                request.username(),
-                request.email(),
+                normalizedUsername,
+                normalizedEmail,
                 passwordEncoder.encode(request.password()));
         return toResponse(userRepository.save(user));
     }
@@ -53,5 +57,13 @@ public class UserService {
 
     private UserResponse toResponse(User user) {
         return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), authTokenService.issueToken(user));
+    }
+
+    private String normalizeUsername(String username) {
+        return username.trim();
+    }
+
+    private String normalizeEmail(String email) {
+        return email.trim().toLowerCase(Locale.ROOT);
     }
 }

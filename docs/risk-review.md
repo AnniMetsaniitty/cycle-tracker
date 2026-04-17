@@ -65,9 +65,12 @@ Last reviewed: 2026-04-17
 ## 7. Minimal registration validation
 
 - Severity: Medium
-- Status: Open
+- Status: Partially Mitigated
 - Explanation: Password validation only requires non-blank input, and username/email normalization is not enforced before uniqueness checks.
 - Impacted files: `RegisterRequest.java`, `UserService.java`, tests
+- Date updated: 2026-04-17
+- Done: Added a minimum password length requirement, trimmed username and email input during request binding, normalized email to lowercase before uniqueness checks and persistence, and added focused integration coverage for normalized duplicate handling and weak-password rejection.
+- Remaining gaps: Username comparison still remains case-sensitive, login input is not normalized in the same way, and the password policy is intentionally a simple baseline rather than a full complexity or breach-checking policy.
 
 ## 8. Narrow test coverage for risky paths
 
