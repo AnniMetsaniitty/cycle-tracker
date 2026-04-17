@@ -4,15 +4,15 @@ services:
     container_name: cycle-tracker-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: cycletracker
-      POSTGRES_USER: cycletracker
-      POSTGRES_PASSWORD: cycletracker
+      POSTGRES_DB: ${CYCLE_TRACKER_DB_NAME:-cycletracker}
+      POSTGRES_USER: ${CYCLE_TRACKER_DB_USERNAME:?Set CYCLE_TRACKER_DB_USERNAME for local Postgres}
+      POSTGRES_PASSWORD: ${CYCLE_TRACKER_DB_PASSWORD:?Set CYCLE_TRACKER_DB_PASSWORD for local Postgres}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - cycle-tracker-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cycletracker -d cycletracker"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5

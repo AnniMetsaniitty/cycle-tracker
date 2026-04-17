@@ -43,27 +43,35 @@ The default development database is in-memory H2. The H2 console is available at
 
 To run with persistent PostgreSQL locally:
 
-1. Start PostgreSQL with Docker Compose:
+1. Set explicit local-only Postgres credentials before starting Docker or the app.
+
+You can export them in your shell:
+
+```bash
+export CYCLE_TRACKER_DB_NAME=cycletracker
+export CYCLE_TRACKER_DB_USERNAME=your-local-db-user
+export CYCLE_TRACKER_DB_PASSWORD='replace-with-a-local-password'
+```
+
+Or copy values from [app/.env.postgres.example](/home/anni/dev/14-Java/cycle-tracker/app/.env.postgres.example#L1) into your own local env file and load that into your shell.
+
+2. Start PostgreSQL with Docker Compose:
 
 ```bash
 cd /home/anni/dev/14-Java/cycle-tracker
 docker compose up -d
 ```
 
-2. Start the backend with the `postgres` Spring profile:
+The Docker mapping binds PostgreSQL to `127.0.0.1` only so it is not exposed on all host interfaces by default.
+
+3. Start the backend with the `postgres` Spring profile:
 
 ```bash
 cd /home/anni/dev/14-Java/cycle-tracker/app
 mvn spring-boot:run -Dspring-boot.run.profiles=postgres
 ```
 
-The default PostgreSQL connection values are:
-
-- database: `cycletracker`
-- username: `cycletracker`
-- password: `cycletracker`
-
-You can override them with environment variables listed in [app/.env.postgres.example](/home/anni/dev/14-Java/cycle-tracker/app/.env.postgres.example#L1).
+The `postgres` Spring profile now requires explicit `CYCLE_TRACKER_DB_USERNAME` and `CYCLE_TRACKER_DB_PASSWORD` values instead of falling back to shared defaults. The database name still defaults to `cycletracker` unless you override `CYCLE_TRACKER_DB_URL` or `CYCLE_TRACKER_DB_NAME`.
 
 In a second terminal, start the JavaFX client:
 

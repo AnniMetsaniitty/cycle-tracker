@@ -1,6 +1,6 @@
 # Risk Review
 
-Last reviewed: 2026-04-10
+Last reviewed: 2026-04-17
 
 ## 1. Unauthenticated user-id-based data access
 
@@ -45,9 +45,12 @@ Last reviewed: 2026-04-10
 ## 5. Local database defaults can leak into shared use
 
 - Severity: Medium
-- Status: Open
+- Status: Partially Mitigated
 - Explanation: Postgres defaults use `cycletracker/cycletracker` and Docker publishes port `5432` to the host.
 - Impacted files: `application-postgres.properties`, `docker-compose.yml`, README/config docs
+- Date updated: 2026-04-17
+- Done: Removed hard-coded fallback Postgres username/password from the Spring `postgres` profile, changed Docker Compose to require explicit local credentials and bind PostgreSQL to `127.0.0.1` only, and updated the local Postgres setup docs/example env file to make the local-only expectation explicit.
+- Remaining gaps: The local Docker flow still uses a host-published port for intentional development access, and developers can still choose weak credentials in their own environment variables. There is still no separate secrets-management workflow for shared or deployed environments.
 
 ## 6. H2 console enabled in the default development profile
 
