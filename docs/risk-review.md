@@ -75,6 +75,9 @@ Last reviewed: 2026-04-17
 ## 8. Narrow test coverage for risky paths
 
 - Severity: Medium-Low
-- Status: Open
+- Status: Partially Mitigated
 - Explanation: Tests cover happy paths and cycle-day calculation but not cross-user access, failed auth behavior, duplicate races, Postgres runtime behavior, or concurrent cycle starts.
 - Impacted files: `app/src/test/java/**`
+- Date updated: 2026-04-17
+- Done: Added focused integration coverage for invalid bearer tokens, malformed authorization headers, and cross-user denial on the medication endpoint. Earlier work had already added coverage for cross-user cycle denial, expired-token rejection, concurrent cycle starts, and normalized duplicate registration handling.
+- Remaining gaps: There is still no automated Postgres-profile runtime coverage, no duplicate-registration race test, and no broader matrix of authorization failures across every protected endpoint. The original risk description is now broader than the current practical coverage gap because several listed areas were already addressed in earlier turns.

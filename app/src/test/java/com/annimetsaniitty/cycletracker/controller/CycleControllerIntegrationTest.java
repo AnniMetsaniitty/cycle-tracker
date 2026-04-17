@@ -115,6 +115,36 @@ class CycleControllerIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void rejectsInvalidBearerTokenForProtectedCycleAccess() throws Exception {
+        mockMvc.perform(get("/cycle/history/{userId}", 1L)
+                        .header("Authorization", "Bearer invalid-token"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message", is("Invalid bearer token")));
+    }
+
+    @Test
+    void rejectsMalformedAuthorizationHeaderForProtectedCycleAccess() throws Exception {
+        mockMvc.perform(get("/cycle/history/{userId}", 1L)
+                        .header("Authorization", "Token invalid-token"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message", is("Missing bearer token")));
+    }
+
+    @Test
+    void rejectsCrossUserMedicationAccess() throws Exception {
+        String firstUserResponse = registerUser("med-cross-anni", "med-cross-anni@example.com");
+        String secondUserResponse = registerUser("med-cross-other", "med-cross-other@example.com");
+
+        long secondUserId = objectMapper.readTree(secondUserResponse).get("id").asLong();
+        String firstAccessToken = objectMapper.readTree(firstUserResponse).get("accessToken").asText();
+
+        mockMvc.perform(get("/medication/status/{userId}", secondUserId)
+                        .header("Authorization", "Bearer " + firstAccessToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", is("Not authorized for requested user")));
+    }
+
     private String registerUser(String username, String email) throws Exception {
         String userPayload = objectMapper.writeValueAsString(Map.of(
                 "username", username,
