@@ -10,10 +10,12 @@ The repository is no longer only an in-memory prototype. It now includes:
 - Layered architecture with controllers, services, repositories, and JPA entities
 - H2-backed persistence for local development
 - PostgreSQL profile for persistent storage
+- Docker Compose support for local PostgreSQL
 - User registration and login
+- Token issuance on register/login plus bearer-token protected cycle and medication endpoints
 - Cycle start, end, current-cycle, and history endpoints
 - Medication window status endpoint
-- Unit and integration test scaffolding
+- Unit and integration test coverage
 - Initial JavaFX desktop client that talks to the REST API
 
 The desktop layer now uses a more structured UI split with dedicated auth and dashboard views. It currently covers login, registration, dashboard metrics, next medication date, medication status, history insights, and selected-cycle detail views.
@@ -27,6 +29,8 @@ The desktop layer now uses a more structured UI split with dedicated auth and da
 - `GET /cycle/current/{userId}`
 - `GET /cycle/history/{userId}`
 - `GET /medication/status/{userId}`
+
+Cycle and medication endpoints are protected. Register and login return an access token, and the desktop client sends that token as `Authorization: Bearer <token>` on protected API calls.
 
 ## Run
 
@@ -95,3 +99,13 @@ If your backend is running on a different base URL:
 cd app
 mvn javafx:run -Dcycletracker.api.base-url=http://localhost:8080
 ```
+
+## Verified
+
+The current repository state has been verified with:
+
+- `mvn test`
+- `mvn spring-boot:run`
+- `mvn javafx:run`
+
+The automated test suite currently covers user registration/login, bearer-token validation, cross-user authorization checks, cycle flows, medication status behavior, token expiration handling, and a cycle concurrency scenario.

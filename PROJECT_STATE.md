@@ -2,7 +2,7 @@
 
 ## Status
 
-As of March 12, 2026, the repository includes a working Spring Boot backend and a refactored JavaFX desktop client layer.
+As of April 20, 2026, the repository includes a working Spring Boot backend and a refactored JavaFX desktop client layer.
 
 ## Completed
 
@@ -19,7 +19,9 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
   - medication status
 - Added H2 configuration for local development
 - Added a PostgreSQL Spring profile for persistent storage
-- Added unit and integration test scaffolding
+- Added Docker Compose support for local PostgreSQL
+- Added token issuance and bearer-token authorization for protected endpoints
+- Added unit and integration test coverage
 - Fixed cycle day calculation to use total elapsed days across month boundaries
 - Added a JavaFX desktop client that consumes the backend REST API
 - Added login, registration, dashboard, medication status, and history views in the desktop app
@@ -34,7 +36,9 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
 - Persistence: Spring Data JPA
 - Development database: H2
 - Persistent database option: PostgreSQL
+- Local PostgreSQL orchestration: Docker Compose
 - Password hashing: BCrypt
+- Protected API access: hashed bearer tokens with configurable TTL
 - Build tool: Maven
 - Language level: Java 17 in Maven config
 
@@ -62,7 +66,9 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
 - `mvn test` runs successfully
 - `mvn spring-boot:run` runs successfully
 - `mvn javafx:run` starts the desktop client successfully
-- Changes committed and pushed to `origin/main`
+- Cycle and medication endpoints enforce bearer-token auth and same-user authorization checks
+- Auth token expiration is covered by integration tests
+- Concurrent cycle-start behavior is covered by integration tests
 
 ## Latest Commits
 
@@ -71,7 +77,6 @@ As of March 12, 2026, the repository includes a working Spring Boot backend and 
 
 ## Known Gaps
 
-- No real session/auth token flow yet; login currently validates credentials and returns user data
 - Desktop client does not yet include advanced navigation, edit flows, or background sync states
 - No deployment packaging beyond standard Spring Boot setup
 
@@ -84,6 +89,7 @@ Extend the JavaFX client layer:
 - add more dedicated history/dashboard subviews or move to FXML if preferred
 - add API base URL configuration in the UI settings
 - test and harden the PostgreSQL runtime path further
+- add token refresh/logout semantics if longer-lived sessions are needed
 - improve desktop packaging and distribution
 
 ## Local Commands
